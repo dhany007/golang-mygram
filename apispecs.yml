@@ -27,6 +27,17 @@ components:
         - email
         - password
         - username
+    ResponseRegisterUser:
+      type: object
+      properties:
+        age:
+          type: integer
+        email:
+          type: string
+        id:
+          type: integer
+        username:
+          type: string
     FailedResponse:
       type: object
       properties:
@@ -53,7 +64,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/ResponseRegisterUser'
         '400':
           description: Failed register new user
           content:
@@ -65,11 +76,39 @@ paths:
     post:
       tags:
       - users
+      description: Login user to get token
+      summary: Login user to get token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+
       responses:
         '200':
-          description: OK
+          description: Success login user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
         '400':
-          description: ERROR
+          description: Failed login user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /users:
     put:
       tags:
