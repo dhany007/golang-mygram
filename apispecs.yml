@@ -38,6 +38,29 @@ components:
           type: integer
         username:
           type: string
+    ResponseUpdateUser:
+      type: object
+      properties:
+        age:
+          type: integer
+        email:
+          type: string
+        id:
+          type: integer
+        username:
+          type: string
+        updated_at:
+          type: string
+    LoginUpdateUser:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password     
     FailedResponse:
       type: object
       properties:
@@ -83,15 +106,7 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-              required:
-                - email
-                - password
-
+              $ref: '#/components/schemas/LoginUpdateUser'
       responses:
         '200':
           description: Success login user
@@ -109,15 +124,41 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/FailedResponse'
-  /users:
+  /users/{userId}:
     put:
       tags:
       - users
+      description: Update data user by user id
+      summary: Update data user by user id
+      parameters:
+        - required: true
+          name: userId
+          in: path
+          description: user id 
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/LoginUpdateUser'
       responses:
         '200':
-          description: OK
+          description: Success update data user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseUpdateUser'
         '400':
-          description: ERROR
+          description: Failed update data user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     delete:
       tags:
       - users
