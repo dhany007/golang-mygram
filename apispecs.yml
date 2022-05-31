@@ -66,6 +66,11 @@ components:
       properties:
         error:
           type: string
+    SuccessResponseMessage:
+      type: object
+      properties:
+        message:
+          type: string
 
 paths:
   /users/register:
@@ -162,11 +167,31 @@ paths:
     delete:
       tags:
       - users
+      description: Delete user by user id
+      summary: Delete user by user id
+      parameters:
+        - required: true
+          name: userId
+          in: path
+          description: user id 
+          schema:
+            type: integer
+            minimum: 1
       responses:
         '200':
-          description: OK
+          description: Success delete user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessResponseMessage'
         '400':
-          description: ERROR
+          description: Failed delete user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /photos:
     post:
       tags:
