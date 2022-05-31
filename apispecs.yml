@@ -209,6 +209,67 @@ components:
           type: integer
         updated_at:
           type: string
+    SocialMedia:
+      type: object
+      properties:
+        name:
+          type: string
+        social_media_url:
+          type: string
+      required:
+        - name
+        - social_media_url
+    ResponseCreateSocialMedia:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        social_media_url:
+          type: string
+        user_id: 
+          type: integer
+        date:
+          type: string
+    ResponseGetSocialMedias:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        social_media_url:
+          type: string
+        UserId: 
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+            profil_image_url:
+              type: string
+    ResponseUpdateSocialMedia:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        social_media_url:
+          type: string
+        user_id: 
+          type: integer
+        updated_at:
+          type: string
+
             
           
 paths:
@@ -557,33 +618,112 @@ paths:
     post:
       tags:
       - socialmedias
+      description: Add new social media
+      summary: Add new social media
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialMedia'
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Success add new social media
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseCreateSocialMedia'
         '400':
-          description: ERROR
+          description: Failed add new social media
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     get:
       tags:
       - socialmedias
+      description: Get all social medias 
+      summary: Get all social medias 
       responses:
         '200':
-          description: OK
+          description: Success get all social medias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  social_medias:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResponseGetSocialMedias'       
         '400':
-          description: ERROR
+          description: Failed get all social media
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /socialmedias/{socialMediaId}:
     put:
       tags:
       - socialmedias
+      description: Update socialmedia by socialmedia id
+      summary: Update socialmedia by socialmedia id
+      parameters:
+        - required: true
+          name: socialMediaId
+          in: path
+          description: socialmedia id 
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/SocialMedia'
       responses:
         '200':
-          description: OK
+          description: Success update socialmedia
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseUpdateSocialMedia'
         '400':
-          description: ERROR
+          description: Failed update socialmedia
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     delete:
       tags:
       - socialmedias
+      description: Delete socialmedia by socialmedia id
+      summary: Delete socialmedia by socialmedia id
+      parameters:
+        - required: true
+          name: socialMediaId
+          in: path
+          description: socialmedia id 
+          schema:
+            type: integer
+            minimum: 1
       responses:
         '200':
-          description: OK
+          description: Success delete socialmedia
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessResponseMessage'
         '400':
-          description: ERROR
+          description: Failed delete socialmedia
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
