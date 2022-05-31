@@ -71,7 +71,72 @@ components:
       properties:
         message:
           type: string
-
+    Photo:
+      type: object
+      properties:
+        title:
+          type: string
+        caption:
+          type: string
+        photo_url:
+          type: string
+      required:
+        - title
+        - photo_url
+    ResponseAddPhoto:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        caption:
+          type: string
+        photo_url:
+          type: string
+        user_id:
+          type: integer
+        created_at:
+          type: string
+    ResponseGetPhoto:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        caption:
+          type: string
+        photo_url:
+          type: string
+        user_id:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        User:
+          type: object
+          properties:
+            email:
+              type: string
+            username:
+              type: string
+    ResponseUpdatePhoto:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        caption:
+          type: string
+        photo_url:
+          type: string
+        user_id:
+          type: integer
+        updated_at:
+          type: string
 paths:
   /users/register:
     post:
@@ -196,36 +261,112 @@ paths:
     post:
       tags:
       - photos
+      description: Add new photo
+      summary: Add new photo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Photo'
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Success add new photo
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseAddPhoto'
         '400':
-          description: ERROR
+          description: Failed register new user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     get:
       tags:
       - photos
+      description: Get all photos 
+      summary: Get all photos 
       responses:
         '200':
-          description: OK
+          description: Success get all photos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseGetPhoto'       
         '400':
-          description: ERROR
+          description: Failed get all photos
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /photos/{photoId}:
     put:
       tags:
       - photos
+      description: Update data photo by photo id
+      summary: Update data photo by photo id
+      parameters:
+        - required: true
+          name: photoId
+          in: path
+          description: photo id 
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Photo'
       responses:
         '200':
-          description: OK
+          description: Success update data photo
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseUpdatePhoto'
         '400':
-          description: ERROR
+          description: Failed update data photo
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     delete:
       tags:
       - photos
+      description: Delete photo by photo id
+      summary: Delete photo by photo id
+      parameters:
+        - required: true
+          name: photoId
+          in: path
+          description: photo id 
+          schema:
+            type: integer
+            minimum: 1
       responses:
         '200':
-          description: OK
+          description: Success delete photo
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessResponseMessage'
         '400':
-          description: ERROR
+          description: Failed delete photo
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /comments:
     post:
       tags:
