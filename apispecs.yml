@@ -137,6 +137,80 @@ components:
           type: integer
         updated_at:
           type: string
+    Comment:
+      type: object
+      properties:
+        message:
+          type: string
+        photo_id:
+          type: integer
+      required:
+        - message
+    ResponseCreateComment:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        photo_id:
+          type: integer
+        user_id:
+          type: integer
+        created_at:
+          type: string
+    ResponseGetComments:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        photo_id:
+          type: integer
+        user_id:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+            email: 
+              type: string
+            password:
+              type: string
+        Photo:
+          type: object
+          properties:
+            id:
+              type: integer
+            title:
+              type: string
+            caption:
+              type: string
+            photo_url:
+              type: string
+            user_id:
+              type: integer
+    ResponseUpdateComment:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        photo_id:
+          type: integer
+        user_id:
+          type: integer
+        updated_at:
+          type: string
+            
+          
 paths:
   /users/register:
     post:
@@ -371,36 +445,114 @@ paths:
     post:
       tags:
       - comments
+      description: Add new comment
+      summary: Add new comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Success add new comment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseCreateComment'
         '400':
-          description: ERROR
+          description: Failed add new comment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     get:
       tags:
       - comments
+      description: Get all comments 
+      summary: Get all comments 
       responses:
         '200':
-          description: OK
+          description: Success get all comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseGetComments'       
         '400':
-          description: ERROR
+          description: Failed get all comments
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /comments/{commentId}:
     put:
       tags:
       - comments
+      description: Update comment by comment id
+      summary: Update comment by comment id
+      parameters:
+        - required: true
+          name: commentId
+          in: path
+          description: comment id 
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
       responses:
         '200':
-          description: OK
+          description: Success update comment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseUpdatePhoto'
         '400':
-          description: ERROR
+          description: Failed update comment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
     delete:
       tags:
       - comments
+      description: Delete comment by comment id
+      summary: Delete comment by comment id
+      parameters:
+        - required: true
+          name: commentId
+          in: path
+          description: comment id 
+          schema:
+            type: integer
+            minimum: 1
       responses:
         '200':
-          description: OK
+          description: Success delete comment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/SuccessResponseMessage'
         '400':
-          description: ERROR
+          description: Failed delete comment
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FailedResponse'
   /socialmedias:
     post:
       tags:
