@@ -2,10 +2,14 @@ package main
 
 import (
 	"final/configs"
-	"fmt"
+	"final/routers"
 )
 
 func main() {
-	fmt.Println("final project")
-	configs.StartDB()
+	PORT := ":3000"
+	db := configs.StartDB()
+
+	router := routers.StartEngine(db)
+
+	router.Run(PORT)
 }
