@@ -46,5 +46,8 @@ func autoMigrate(db *gorm.DB) error {
 		return err
 	}
 
+	if err := db.AutoMigrate(&models.Comment{}); err != nil {
+		return err
+	}
 	return nil
 }

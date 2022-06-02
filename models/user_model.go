@@ -9,6 +9,7 @@ type User struct {
 	Password  string `json:"password"`
 	Age       int    `json:"age"`
 	Photo     Photo
+	Comment   Comment
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
