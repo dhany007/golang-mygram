@@ -2,7 +2,6 @@ package models
 
 import (
 	"final/helpers"
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,7 +19,6 @@ type User struct {
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
-	fmt.Println("kesini dulu kan")
 	u.Password = helpers.HashPass(u.Password)
 	err = nil
 

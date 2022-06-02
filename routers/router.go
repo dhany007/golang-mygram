@@ -21,6 +21,7 @@ func StartEngine(db *gorm.DB) *gin.Engine {
 	userRouter := router.Group("/users")
 	{
 		userRouter.POST("/register", userController.CreateUser)
+		userRouter.POST("/login", userController.LoginUser)
 	}
 
 	router.Use(gin.Recovery())

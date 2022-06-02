@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"final/helpers"
 	"final/models"
 	"final/params"
 	"final/repositories"
@@ -25,10 +26,9 @@ func NewUserService(userRepository repositories.UserRepository, db *gorm.DB, val
 }
 
 func (userService *UserServiceImpl) CreateUser(userParams params.CreateUser) (models.User, error) {
-	err := userService.Validate.Struct(userParams)
-
 	user := models.User{}
 
+	err := userService.Validate.Struct(userParams)
 	if err != nil {
 		return user, errors.New(err.Error())
 	}
@@ -44,4 +44,31 @@ func (userService *UserServiceImpl) CreateUser(userParams params.CreateUser) (mo
 	}
 
 	return response, nil
+}
+
+func (userService *UserServiceImpl) LoginUser(userParams params.LoginUser) (string, error) {
+	err := userService.Validate.Struct(userParams)
+	if err != nil {
+		return "", errors.New(err.Error())
+	}
+
+	user := models.User{
+		Email: userParams.Email,
+	}
+
+	response, err := userService.UserRepository.LoginUser(userService.DB, user)
+	if err != nil {
+		return "", errors.New(err.Error())
+	}
+
+	passwordUser := response.Password
+
+	comparePassword := helpers.ComparePassword([]byte(passwordUser), []byte(userParams.Password))
+	if !comparePassword {
+		return "", errors.New("password not match")
+	}
+
+	token := helpers.GenerateToken(int(user.ID), user.Email)
+
+	return token, nil
 }

@@ -31,3 +31,18 @@ func (userController *UserControllerImpl) CreateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, user)
 }
+
+func (userController *UserControllerImpl) LoginUser(ctx *gin.Context) {
+	request := params.LoginUser{}
+	helpers.ReadFromRequestBody(ctx, &request)
+
+	token, err := userController.UserService.LoginUser(request)
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
+}
