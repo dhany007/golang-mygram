@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"final/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,14 +13,14 @@ func PanicIfError(err error) {
 }
 
 func SuccessMessageResponse(ctx *gin.Context, message string) {
-	ctx.JSON(http.StatusOK, models.Response{
-		Message: message,
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": message,
 	})
 }
 
 func FailedMessageResponse(ctx *gin.Context, err string) {
-	ctx.AbortWithStatusJSON(http.StatusBadRequest, models.Response{
-		Error: err,
+	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		"error": err,
 	})
 }
 
