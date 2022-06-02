@@ -2,6 +2,7 @@ package configs
 
 import (
 	"final/helpers"
+	"final/models"
 	"fmt"
 	"log"
 
@@ -28,7 +29,18 @@ func StartDB() *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dataSourceName), &gorm.Config{})
 	helpers.PanicIfError(err)
 
+	err = autoMigrate(db)
+	helpers.PanicIfError(err)
+
 	log.Default().Println("connection db succcess")
 
 	return db
+}
+
+func autoMigrate(db *gorm.DB) error {
+	if err := db.AutoMigrate(&models.User{}); err != nil {
+		return err
+	}
+
+	return nil
 }
