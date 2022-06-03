@@ -28,6 +28,19 @@ func StartEngine(db *gorm.DB) *gin.Engine {
 		userRouter.DELETE("/:userId", middlewares.UserAuthorization(), userController.DeleteUser)
 	}
 
+	photoRepository := repositories.NewPhotoRepository()
+	photoService := services.NewPhotoService(db, photoRepository, validate)
+	photoController := controllers.NewPhotoController(photoService)
+
+	photoRouter := router.Group("/photos")
+	{
+		photoRouter.Use(middlewares.Authentication())
+		photoRouter.POST("/", photoController.CreatePhoto)
+		photoRouter.GET("/", photoController.GetPhotos)
+		photoRouter.PUT("/:photoId", photoController.UpdatePhoto)
+		photoRouter.DELETE("/:photoId", photoController.DeletePhoto)
+	}
+
 	router.Use(gin.Recovery())
 
 	return router

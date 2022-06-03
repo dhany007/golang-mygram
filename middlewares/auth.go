@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"final/helpers"
-	"strconv"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -39,24 +38,6 @@ func Authentication() gin.HandlerFunc {
 
 		ctx.Set("id", data["id"])
 		ctx.Set("email", data["email"])
-
-		ctx.Next()
-	}
-}
-
-func UserAuthorization() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		paramUserId, err := strconv.Atoi(ctx.Param("userId"))
-		if err != nil {
-			helpers.FailedMessageResponse(ctx, "invalid parameter user id")
-			return
-		}
-		tokenUserId := uint(ctx.MustGet("id").(float64))
-
-		if tokenUserId != uint(paramUserId) {
-			helpers.FailedMessageResponse(ctx, "unauthorized")
-			return
-		}
 
 		ctx.Next()
 	}

@@ -8,7 +8,7 @@ type Photo struct {
 	Caption   string    `json:"caption" gorm:"varchar(254)"`
 	PhotoUrl  string    `json:"photo_url" gorm:"text"`
 	UserID    uint      `json:"user_id"`
-	Comment   Comment   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Comment   *Comment  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:",omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
