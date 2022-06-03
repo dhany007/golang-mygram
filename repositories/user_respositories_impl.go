@@ -55,3 +55,12 @@ func (userRepository *UserRepositoryImpl) UpdateUser(db *gorm.DB, user models.Us
 
 	return user, nil
 }
+
+func (userRepository *UserRepositoryImpl) DeleteUserByID(db *gorm.DB, user models.User) error {
+	err := db.Delete(&user).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

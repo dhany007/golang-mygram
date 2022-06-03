@@ -92,3 +92,16 @@ func (userService *UserServiceImpl) UpdateUser(userParams params.UpdateUser, use
 
 	return response, nil
 }
+
+func (userService *UserServiceImpl) DeleteUserByID(userId int) error {
+	user := models.User{
+		ID: uint(userId),
+	}
+
+	err := userService.UserRepository.DeleteUserByID(userService.DB, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

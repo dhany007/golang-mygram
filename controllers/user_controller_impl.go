@@ -67,3 +67,20 @@ func (userController *UserControllerImpl) UpdateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (userController *UserControllerImpl) DeleteUser(ctx *gin.Context) {
+	userId, err := strconv.Atoi(ctx.Param("userId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter user id")
+		return
+	}
+
+	err = userController.UserService.DeleteUserByID(userId)
+
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	helpers.SuccessMessageResponse(ctx, "Your account has been successfully deleted")
+}

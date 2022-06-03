@@ -25,6 +25,7 @@ func StartEngine(db *gorm.DB) *gin.Engine {
 		userRouter.POST("/login", userController.LoginUser)
 		userRouter.Use(middlewares.Authentication())
 		userRouter.PUT("/:userId", middlewares.UserAuthorization(), userController.UpdateUser)
+		userRouter.DELETE("/:userId", middlewares.UserAuthorization(), userController.DeleteUser)
 	}
 
 	router.Use(gin.Recovery())
