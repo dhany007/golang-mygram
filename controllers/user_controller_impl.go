@@ -5,6 +5,7 @@ import (
 	"final/params"
 	"final/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,4 +46,24 @@ func (userController *UserControllerImpl) LoginUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})
+}
+
+func (userController *UserControllerImpl) UpdateUser(ctx *gin.Context) {
+	request := params.UpdateUser{}
+	helpers.ReadFromRequestBody(ctx, &request)
+
+	userId, err := strconv.Atoi(ctx.Param("userId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter user id")
+		return
+	}
+
+	response, err := userController.UserService.UpdateUser(request, userId)
+
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

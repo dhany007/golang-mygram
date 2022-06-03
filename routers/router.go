@@ -2,6 +2,7 @@ package routers
 
 import (
 	"final/controllers"
+	"final/middlewares"
 	"final/repositories"
 	"final/services"
 
@@ -22,6 +23,8 @@ func StartEngine(db *gorm.DB) *gin.Engine {
 	{
 		userRouter.POST("/register", userController.CreateUser)
 		userRouter.POST("/login", userController.LoginUser)
+		userRouter.Use(middlewares.Authentication())
+		userRouter.PUT("/:userId", middlewares.UserAuthorization(), userController.UpdateUser)
 	}
 
 	router.Use(gin.Recovery())

@@ -68,7 +68,27 @@ func (userService *UserServiceImpl) LoginUser(userParams params.LoginUser) (stri
 		return "", errors.New("password not match")
 	}
 
-	token := helpers.GenerateToken(int(user.ID), user.Email)
+	token := helpers.GenerateToken(int(response.ID), user.Email)
 
 	return token, nil
+}
+
+func (userService *UserServiceImpl) UpdateUser(userParams params.UpdateUser, userId int) (models.User, error) {
+	user := models.User{}
+
+	errRequest := userService.Validate.Struct(userParams)
+	if errRequest != nil {
+		return user, errors.New(errRequest.Error())
+	}
+
+	user.Email = userParams.Email
+	user.Username = userParams.Username
+
+	response, err := userService.UserRepository.UpdateUser(userService.DB, user, userId)
+
+	if err != nil {
+		return user, errors.New(err.Error())
+	}
+
+	return response, nil
 }
