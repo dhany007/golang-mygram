@@ -47,7 +47,15 @@ func (photoService *PhotoServiceImpl) CreatePhoto(photoParams params.CreateUpdat
 }
 
 func (photoService *PhotoServiceImpl) GetPhotos() ([]models.Photo, error) {
-	panic("implement me")
+	photos := []models.Photo{}
+
+	response, err := photoService.PhotoRepository.GetPhotos(photoService.DB)
+
+	if err != nil {
+		return photos, errors.New(err.Error())
+	}
+
+	return response, nil
 }
 
 func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdatePhoto) (models.Photo, error) {

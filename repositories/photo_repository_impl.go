@@ -24,7 +24,23 @@ func (photoRepsitory *PhotoRepositoryImpl) CreatePhoto(db *gorm.DB, photo models
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) GetPhotos(db *gorm.DB) ([]models.Photo, error) {
-	panic("implement me")
+	photos := []models.Photo{}
+
+	result := db.Table("photos").Scan(&photos)
+	if result.RowsAffected == 0 {
+		return photos, errors.New("photos not found")
+	}
+
+	for i, p := range photos {
+		user := models.User{}
+		err := db.Table("users").Select([]string{"email", "username"}).Where("id = ?", p.UserID).Scan(&user).Error
+		if err != nil {
+			continue
+		}
+		photos[i].User = user
+	}
+
+	return photos, nil
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) UpdatePhoto(db *gorm.DB, photo models.Photo, photoId int) (models.Photo, error) {

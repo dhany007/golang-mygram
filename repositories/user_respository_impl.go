@@ -21,7 +21,14 @@ func (userRepository *UserRepositoryImpl) CreateUser(db *gorm.DB, user models.Us
 		return user, errors.New(err.Error())
 	}
 
-	return user, nil
+	userCreated := models.User{
+		Age:      user.Age,
+		Email:    user.Email,
+		ID:       user.ID,
+		Username: user.Username,
+	}
+
+	return userCreated, nil
 }
 
 func (userRepository *UserRepositoryImpl) LoginUser(db *gorm.DB, user models.User) (models.User, error) {
@@ -49,11 +56,15 @@ func (userRepository *UserRepositoryImpl) UpdateUser(db *gorm.DB, user models.Us
 		return user, errors.New(err.Error())
 	}
 
-	user.ID = uint(userId)
-	user.Email = tempRequest.Email
-	user.Username = tempRequest.Username
+	userUpdated := models.User{
+		ID:        user.ID,
+		Email:     user.Email,
+		Username:  user.Username,
+		Age:       user.Age,
+		UpdatedAt: user.UpdatedAt,
+	}
 
-	return user, nil
+	return userUpdated, nil
 }
 
 func (userRepository *UserRepositoryImpl) DeleteUserByID(db *gorm.DB, user models.User) error {

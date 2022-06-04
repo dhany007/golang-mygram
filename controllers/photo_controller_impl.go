@@ -20,7 +20,6 @@ func NewPhotoController(photoService services.PhotoService) PhotoController {
 }
 
 func (photoController *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
-	// panic("implement me")
 	request := params.CreateUpdatePhoto{}
 	helpers.ReadFromRequestBody(ctx, &request)
 
@@ -33,11 +32,16 @@ func (photoController *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, photo)
+	ctx.JSON(http.StatusCreated, photo)
 }
 
 func (photoController *PhotoControllerImpl) GetPhotos(ctx *gin.Context) {
-	panic("implement me")
+	photos, err := photoController.PhotoService.GetPhotos()
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+	}
+
+	ctx.JSON(http.StatusOK, photos)
 }
 
 func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
