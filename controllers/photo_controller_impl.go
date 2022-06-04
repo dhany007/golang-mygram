@@ -5,6 +5,7 @@ import (
 	"final/params"
 	"final/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,7 +46,22 @@ func (photoController *PhotoControllerImpl) GetPhotos(ctx *gin.Context) {
 }
 
 func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
-	panic("implement me")
+	request := params.CreateUpdatePhoto{}
+	helpers.ReadFromRequestBody(ctx, &request)
+
+	photoId, err := strconv.Atoi(ctx.Param("photoId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter photo id")
+		return
+	}
+
+	photo, err := photoController.PhotoService.UpdatePhoto(request, photoId)
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, photo)
 }
 
 func (photoController *PhotoControllerImpl) DeletePhoto(ctx *gin.Context) {

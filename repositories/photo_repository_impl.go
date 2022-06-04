@@ -37,16 +37,54 @@ func (photoRepsitory *PhotoRepositoryImpl) GetPhotos(db *gorm.DB) ([]models.Phot
 		if err != nil {
 			continue
 		}
-		photos[i].User = user
+		photos[i].User = &user
 	}
 
 	return photos, nil
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) UpdatePhoto(db *gorm.DB, photo models.Photo, photoId int) (models.Photo, error) {
-	panic("implement me")
+	requestPhoto := photo
+	result := db.Where("id = ?", photoId).First(&photo)
+
+	if result.RowsAffected == 0 {
+		return photo, errors.New("photo not found")
+	}
+
+	err := db.Model(&photo).Where("id = ?", photoId).Updates(models.Photo{
+		Caption:  requestPhoto.Caption,
+		Title:    requestPhoto.Title,
+		PhotoUrl: requestPhoto.PhotoUrl,
+	}).Error
+
+	if err != nil {
+		return photo, errors.New(err.Error())
+	}
+
+	photoUpdated := models.Photo{
+		ID:        photo.ID,
+		Title:     photo.Title,
+		Caption:   photo.Caption,
+		PhotoUrl:  photo.PhotoUrl,
+		UserID:    photo.UserID,
+		UpdatedAt: photo.UpdatedAt,
+	}
+
+	return photoUpdated, nil
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) DeletePhoto(db *gorm.DB, photo models.Photo) error {
 	panic("implement me")
+}
+
+func (photoRepsitory *PhotoRepositoryImpl) GetPhotoById(db *gorm.DB, photoId int) (models.Photo, error) {
+	photo := models.Photo{}
+
+	result := db.Table("photos").Select([]string{"id", "user_id"}).Where("id = ?", photoId).Scan(&photo)
+
+	if result.RowsAffected == 0 {
+		return photo, errors.New("photo not found")
+	}
+
+	return photo, nil
 }

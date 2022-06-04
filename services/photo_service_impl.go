@@ -58,8 +58,25 @@ func (photoService *PhotoServiceImpl) GetPhotos() ([]models.Photo, error) {
 	return response, nil
 }
 
-func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdatePhoto) (models.Photo, error) {
-	panic("implement me")
+func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdatePhoto, photoId int) (models.Photo, error) {
+	photo := models.Photo{}
+
+	errRequest := photoService.Validate.Struct(photoParams)
+	if errRequest != nil {
+		return photo, errors.New(errRequest.Error())
+	}
+
+	photo.Caption = photoParams.Caption
+	photo.Title = photoParams.Title
+	photo.PhotoUrl = photoParams.PhotoUrl
+
+	response, err := photoService.PhotoRepository.UpdatePhoto(photoService.DB, photo, photoId)
+
+	if err != nil {
+		return photo, errors.New(err.Error())
+	}
+
+	return response, nil
 }
 
 func (photoService *PhotoServiceImpl) DeletePhotoByID(photoId int) error {

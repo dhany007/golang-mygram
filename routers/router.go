@@ -37,7 +37,7 @@ func StartEngine(db *gorm.DB) *gin.Engine {
 		photoRouter.Use(middlewares.Authentication())
 		photoRouter.POST("/", photoController.CreatePhoto)
 		photoRouter.GET("/", photoController.GetPhotos)
-		photoRouter.PUT("/:photoId", photoController.UpdatePhoto)
+		photoRouter.PUT("/:photoId", middlewares.PhotoAuthorization(db), photoController.UpdatePhoto)
 		photoRouter.DELETE("/:photoId", photoController.DeletePhoto)
 	}
 
