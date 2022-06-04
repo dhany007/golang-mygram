@@ -74,7 +74,12 @@ func (photoRepsitory *PhotoRepositoryImpl) UpdatePhoto(db *gorm.DB, photo models
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) DeletePhoto(db *gorm.DB, photo models.Photo) error {
-	panic("implement me")
+	err := db.Delete(&photo).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) GetPhotoById(db *gorm.DB, photoId int) (models.Photo, error) {

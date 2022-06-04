@@ -65,5 +65,20 @@ func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 }
 
 func (photoController *PhotoControllerImpl) DeletePhoto(ctx *gin.Context) {
-	panic("implement me")
+	// panic("implement me")
+
+	photoId, err := strconv.Atoi(ctx.Param("photoId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter photo id")
+		return
+	}
+
+	err = photoController.PhotoService.DeletePhotoByID(photoId)
+
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	helpers.SuccessMessageResponse(ctx, "Your photo has been successfully deleted")
 }

@@ -80,5 +80,14 @@ func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdat
 }
 
 func (photoService *PhotoServiceImpl) DeletePhotoByID(photoId int) error {
-	panic("implement me")
+	photo := models.Photo{
+		ID: uint(photoId),
+	}
+
+	err := photoService.PhotoRepository.DeletePhoto(photoService.DB, photo)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
