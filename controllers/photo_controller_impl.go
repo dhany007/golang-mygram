@@ -71,8 +71,6 @@ func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 }
 
 func (photoController *PhotoControllerImpl) DeletePhoto(ctx *gin.Context) {
-	// panic("implement me")
-
 	photoId, err := strconv.Atoi(ctx.Param("photoId"))
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, "invalid parameter photo id")

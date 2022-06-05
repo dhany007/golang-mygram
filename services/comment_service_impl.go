@@ -76,5 +76,14 @@ func (commentService *CommentServiceImpl) UpdateComment(commentParam params.Upda
 }
 
 func (commentService *CommentServiceImpl) DeleteCommentByID(commentId int) error {
-	panic("implement me")
+	comment := models.Comment{
+		ID: uint(commentId),
+	}
+
+	err := commentService.CommentRepository.DeleteComment(commentService.DB, comment)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

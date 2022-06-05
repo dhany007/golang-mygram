@@ -71,5 +71,18 @@ func (commentController *CommentControllerImpl) UpdateComment(ctx *gin.Context) 
 }
 
 func (commentController *CommentControllerImpl) DeleteCommentByID(ctx *gin.Context) {
-	panic("implement me")
+	commentId, err := strconv.Atoi(ctx.Param("commentId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter comment id")
+		return
+	}
+
+	err = commentController.CommentService.DeleteCommentByID(commentId)
+
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	helpers.SuccessMessageResponse(ctx, "Your comment has been successfully deleted")
 }

@@ -78,7 +78,12 @@ func (commentRepository *CommentRepositoryImpl) UpdateComment(db *gorm.DB, comme
 }
 
 func (commentRepository *CommentRepositoryImpl) DeleteComment(db *gorm.DB, comment models.Comment) error {
-	panic("implement me")
+	err := db.Delete(&comment).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (commentRepository *CommentRepositoryImpl) GetCommentById(db *gorm.DB, commentId int) (models.Comment, error) {
