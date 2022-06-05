@@ -9,7 +9,7 @@ func main() {
 	PORT := ":3000"
 	db := configs.StartDB()
 
-	router := routers.StartEngine(db)
+	router := routers.StartServer(db)
 
 	router.Run(PORT)
 }

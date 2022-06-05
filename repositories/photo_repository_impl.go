@@ -20,7 +20,16 @@ func (photoRepsitory *PhotoRepositoryImpl) CreatePhoto(db *gorm.DB, photo models
 		return photo, errors.New(err.Error())
 	}
 
-	return photo, nil
+	photoCreated := models.Photo{
+		ID:        photo.ID,
+		Title:     photo.Title,
+		Caption:   photo.Caption,
+		PhotoUrl:  photo.PhotoUrl,
+		UserID:    photo.UserID,
+		CreatedAt: photo.CreatedAt,
+	}
+
+	return photoCreated, nil
 }
 
 func (photoRepsitory *PhotoRepositoryImpl) GetPhotos(db *gorm.DB) ([]models.Photo, error) {

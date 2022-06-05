@@ -24,10 +24,13 @@ func FailedMessageResponse(ctx *gin.Context, err string) {
 	})
 }
 
-func ReadFromRequestBody(ctx *gin.Context, result interface{}) {
+func ReadFromRequestBody(ctx *gin.Context, result interface{}) bool {
+	request := true
 	err := ctx.ShouldBindJSON(result)
 	if err != nil {
 		FailedMessageResponse(ctx, err.Error())
-		return
+		request = false
 	}
+
+	return request
 }

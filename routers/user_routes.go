@@ -11,8 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func StartEngine(db *gorm.DB) *gin.Engine {
-	router := gin.Default()
+func UserRoutes(db *gorm.DB, router *gin.Engine) {
 	validate := validator.New()
 
 	userRepository := repositories.NewUserRepository()
@@ -28,20 +27,4 @@ func StartEngine(db *gorm.DB) *gin.Engine {
 		userRouter.DELETE("/:userId", middlewares.UserAuthorization(), userController.DeleteUser)
 	}
 
-	photoRepository := repositories.NewPhotoRepository()
-	photoService := services.NewPhotoService(db, photoRepository, validate)
-	photoController := controllers.NewPhotoController(photoService)
-
-	photoRouter := router.Group("/photos")
-	{
-		photoRouter.Use(middlewares.Authentication())
-		photoRouter.POST("/", photoController.CreatePhoto)
-		photoRouter.GET("/", photoController.GetPhotos)
-		photoRouter.PUT("/:photoId", middlewares.PhotoAuthorization(db), photoController.UpdatePhoto)
-		photoRouter.DELETE("/:photoId", middlewares.PhotoAuthorization(db), photoController.DeletePhoto)
-	}
-
-	router.Use(gin.Recovery())
-
-	return router
 }

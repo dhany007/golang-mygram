@@ -22,7 +22,10 @@ func NewPhotoController(photoService services.PhotoService) PhotoController {
 
 func (photoController *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 	request := params.CreateUpdatePhoto{}
-	helpers.ReadFromRequestBody(ctx, &request)
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
 
 	userId := ctx.MustGet("id").(float64)
 	request.UserID = uint(userId)
@@ -47,7 +50,10 @@ func (photoController *PhotoControllerImpl) GetPhotos(ctx *gin.Context) {
 
 func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 	request := params.CreateUpdatePhoto{}
-	helpers.ReadFromRequestBody(ctx, &request)
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
 
 	photoId, err := strconv.Atoi(ctx.Param("photoId"))
 	if err != nil {

@@ -22,7 +22,10 @@ func NewUserController(userService services.UserService) UserController {
 
 func (userController *UserControllerImpl) CreateUser(ctx *gin.Context) {
 	request := params.CreateUser{}
-	helpers.ReadFromRequestBody(ctx, &request)
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
 
 	user, err := userController.UserService.CreateUser(request)
 	if err != nil {
@@ -35,7 +38,10 @@ func (userController *UserControllerImpl) CreateUser(ctx *gin.Context) {
 
 func (userController *UserControllerImpl) LoginUser(ctx *gin.Context) {
 	request := params.LoginUser{}
-	helpers.ReadFromRequestBody(ctx, &request)
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
 
 	token, err := userController.UserService.LoginUser(request)
 	if err != nil {
@@ -50,7 +56,10 @@ func (userController *UserControllerImpl) LoginUser(ctx *gin.Context) {
 
 func (userController *UserControllerImpl) UpdateUser(ctx *gin.Context) {
 	request := params.UpdateUser{}
-	helpers.ReadFromRequestBody(ctx, &request)
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
 
 	userId, err := strconv.Atoi(ctx.Param("userId"))
 	if err != nil {
