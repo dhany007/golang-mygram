@@ -31,7 +31,24 @@ func (commentRepository *CommentRepositoryImpl) CreateComment(db *gorm.DB, comme
 	return commentCreated, nil
 }
 func (commentRepository *CommentRepositoryImpl) GetComments(db *gorm.DB) ([]models.Comment, error) {
-	panic("implement me")
+	comments := []models.Comment{}
+
+	result := db.Table("comments").Scan(&comments)
+	if result.RowsAffected == 0 {
+		return comments, errors.New("comments not found")
+	}
+
+	for i, comment := range comments {
+		user := models.User{}
+		db.Table("users").Select([]string{"id", "email", "username"}).Where("id = ?", comment.UserID).Scan(&user)
+		comments[i].User = &user
+
+		photo := models.Photo{}
+		db.Table("photos").Select([]string{"id", "title", "caption", "photo_url", "user_id"}).Where("id = ?", comment.PhotoID).Scan(&photo)
+		comments[i].Photo = &photo
+	}
+
+	return comments, nil
 }
 func (commentRepository *CommentRepositoryImpl) UpdateComment(db *gorm.DB, comment models.Comment, commentId int) (models.Comment, error) {
 	panic("implement me")

@@ -39,7 +39,12 @@ func (commentController *CommentControllerImpl) CreateComment(ctx *gin.Context) 
 }
 
 func (commentController *CommentControllerImpl) GetComments(ctx *gin.Context) {
-	panic("implement me")
+	comments, err := commentController.CommentService.GetComments()
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+	}
+
+	ctx.JSON(http.StatusOK, comments)
 }
 
 func (commentController *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
