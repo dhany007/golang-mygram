@@ -51,8 +51,44 @@ func (commentRepository *CommentRepositoryImpl) GetComments(db *gorm.DB) ([]mode
 	return comments, nil
 }
 func (commentRepository *CommentRepositoryImpl) UpdateComment(db *gorm.DB, comment models.Comment, commentId int) (models.Comment, error) {
-	panic("implement me")
+	requestComment := comment
+	result := db.Where("id = ?", commentId).First(&comment)
+
+	if result.RowsAffected == 0 {
+		return comment, errors.New("photo not found")
+	}
+
+	err := db.Model(&comment).Where("id = ?", commentId).Updates(models.Comment{
+		Message: requestComment.Message,
+	}).Error
+
+	if err != nil {
+		return comment, errors.New(err.Error())
+	}
+
+	commentUpdated := models.Comment{
+		ID:        comment.ID,
+		Message:   comment.Message,
+		PhotoID:   comment.PhotoID,
+		UserID:    comment.UserID,
+		UpdatedAt: comment.UpdatedAt,
+	}
+
+	return commentUpdated, nil
 }
+
 func (commentRepository *CommentRepositoryImpl) DeleteComment(db *gorm.DB, comment models.Comment) error {
 	panic("implement me")
+}
+
+func (commentRepository *CommentRepositoryImpl) GetCommentById(db *gorm.DB, commentId int) (models.Comment, error) {
+	comment := models.Comment{}
+
+	result := db.Table("comments").Select([]string{"id", "user_id"}).Where("id = ?", commentId).Scan(&comment)
+
+	if result.RowsAffected == 0 {
+		return comment, errors.New("comment not found")
+	}
+
+	return comment, nil
 }

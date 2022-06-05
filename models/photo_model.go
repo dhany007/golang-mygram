@@ -10,5 +10,5 @@ type Photo struct {
 	UserID    uint       `json:"user_id"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	User      *User      `json:",omitempty"`
+	User      *User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:",omitempty"`
 }

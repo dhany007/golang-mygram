@@ -5,6 +5,7 @@ import (
 	"final/params"
 	"final/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,7 +49,25 @@ func (commentController *CommentControllerImpl) GetComments(ctx *gin.Context) {
 }
 
 func (commentController *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
-	panic("implement me")
+	request := params.UpdateComment{}
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
+
+	commentId, err := strconv.Atoi(ctx.Param("commentId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter photo id")
+		return
+	}
+
+	comment, err := commentController.CommentService.UpdateComment(request, commentId)
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comment)
 }
 
 func (commentController *CommentControllerImpl) DeleteCommentByID(ctx *gin.Context) {

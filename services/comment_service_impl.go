@@ -57,7 +57,22 @@ func (commentService *CommentServiceImpl) GetComments() ([]models.Comment, error
 }
 
 func (commentService *CommentServiceImpl) UpdateComment(commentParam params.UpdateComment, commentId int) (models.Comment, error) {
-	panic("implement me")
+	comment := models.Comment{}
+
+	errRequest := commentService.Validate.Struct(commentParam)
+	if errRequest != nil {
+		return comment, errors.New(errRequest.Error())
+	}
+
+	comment.Message = commentParam.Message
+
+	response, err := commentService.CommentRepository.UpdateComment(commentService.DB, comment, commentId)
+
+	if err != nil {
+		return comment, errors.New(err.Error())
+	}
+
+	return response, nil
 }
 
 func (commentService *CommentServiceImpl) DeleteCommentByID(commentId int) error {

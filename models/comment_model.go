@@ -9,6 +9,6 @@ type Comment struct {
 	UserID    uint       `json:"user_id"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	User      *User      `json:",omitempty"`
-	Photo     *Photo     `json:",omitempty"`
+	User      *User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:",omitempty"`
+	Photo     *Photo     `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:",omitempty"`
 }

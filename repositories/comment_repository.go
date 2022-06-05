@@ -11,4 +11,5 @@ type CommentRepository interface {
 	GetComments(db *gorm.DB) ([]models.Comment, error)
 	UpdateComment(db *gorm.DB, comment models.Comment, commentId int) (models.Comment, error)
 	DeleteComment(db *gorm.DB, comment models.Comment) error
+	GetCommentById(db *gorm.DB, commentId int) (models.Comment, error)
 }

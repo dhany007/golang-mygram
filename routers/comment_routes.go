@@ -23,7 +23,7 @@ func CommentRoutes(db *gorm.DB, router *gin.Engine) {
 		commentRoutes.Use(middlewares.Authentication())
 		commentRoutes.POST("/", commentController.CreateComment)
 		commentRoutes.GET("/", commentController.GetComments)
-		commentRoutes.PUT("/:commentId", commentController.UpdateComment)
+		commentRoutes.PUT("/:commentId", middlewares.CommentAuthorization(db), commentController.UpdateComment)
 		commentRoutes.DELETE("/:commentId", commentController.DeleteCommentByID)
 	}
 }
