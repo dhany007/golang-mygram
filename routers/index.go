@@ -11,6 +11,7 @@ func StartServer(db *gorm.DB) *gin.Engine {
 	UserRoutes(db, router)
 	PhotoRoutes(db, router)
 	CommentRoutes(db, router)
+	SocialMediaRoutes(db, router)
 
 	router.Use(gin.Recovery())
 

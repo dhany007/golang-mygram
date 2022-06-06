@@ -16,18 +16,18 @@ type PhotoServiceImpl struct {
 	Validate        *validator.Validate
 }
 
-func NewPhotoService(db *gorm.DB, photoRepository repositories.PhotoRepository, validate *validator.Validate) PhotoService {
+func NewPhotoService(db *gorm.DB, repository repositories.PhotoRepository, validate *validator.Validate) PhotoService {
 	return &PhotoServiceImpl{
 		DB:              db,
-		PhotoRepository: photoRepository,
+		PhotoRepository: repository,
 		Validate:        validate,
 	}
 }
 
-func (photoService *PhotoServiceImpl) CreatePhoto(photoParams params.CreateUpdatePhoto) (models.Photo, error) {
+func (service *PhotoServiceImpl) CreatePhoto(photoParams params.CreateUpdatePhoto) (models.Photo, error) {
 	photo := models.Photo{}
 
-	errValidate := photoService.Validate.Struct(photoParams)
+	errValidate := service.Validate.Struct(photoParams)
 	if errValidate != nil {
 		return photo, errors.New(errValidate.Error())
 	}
@@ -37,7 +37,7 @@ func (photoService *PhotoServiceImpl) CreatePhoto(photoParams params.CreateUpdat
 	photo.PhotoUrl = photoParams.PhotoUrl
 	photo.UserID = photoParams.UserID
 
-	response, err := photoService.PhotoRepository.CreatePhoto(photoService.DB, photo)
+	response, err := service.PhotoRepository.CreatePhoto(service.DB, photo)
 
 	if err != nil {
 		return photo, errors.New(err.Error())
@@ -46,10 +46,10 @@ func (photoService *PhotoServiceImpl) CreatePhoto(photoParams params.CreateUpdat
 	return response, nil
 }
 
-func (photoService *PhotoServiceImpl) GetPhotos() ([]models.Photo, error) {
+func (service *PhotoServiceImpl) GetPhotos() ([]models.Photo, error) {
 	photos := []models.Photo{}
 
-	response, err := photoService.PhotoRepository.GetPhotos(photoService.DB)
+	response, err := service.PhotoRepository.GetPhotos(service.DB)
 
 	if err != nil {
 		return photos, errors.New(err.Error())
@@ -58,10 +58,10 @@ func (photoService *PhotoServiceImpl) GetPhotos() ([]models.Photo, error) {
 	return response, nil
 }
 
-func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdatePhoto, photoId int) (models.Photo, error) {
+func (service *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdatePhoto, photoId int) (models.Photo, error) {
 	photo := models.Photo{}
 
-	errRequest := photoService.Validate.Struct(photoParams)
+	errRequest := service.Validate.Struct(photoParams)
 	if errRequest != nil {
 		return photo, errors.New(errRequest.Error())
 	}
@@ -70,7 +70,7 @@ func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdat
 	photo.Title = photoParams.Title
 	photo.PhotoUrl = photoParams.PhotoUrl
 
-	response, err := photoService.PhotoRepository.UpdatePhoto(photoService.DB, photo, photoId)
+	response, err := service.PhotoRepository.UpdatePhoto(service.DB, photo, photoId)
 
 	if err != nil {
 		return photo, errors.New(err.Error())
@@ -79,12 +79,12 @@ func (photoService *PhotoServiceImpl) UpdatePhoto(photoParams params.CreateUpdat
 	return response, nil
 }
 
-func (photoService *PhotoServiceImpl) DeletePhotoByID(photoId int) error {
+func (service *PhotoServiceImpl) DeletePhotoByID(photoId int) error {
 	photo := models.Photo{
 		ID: uint(photoId),
 	}
 
-	err := photoService.PhotoRepository.DeletePhoto(photoService.DB, photo)
+	err := service.PhotoRepository.DeletePhoto(service.DB, photo)
 	if err != nil {
 		return err
 	}

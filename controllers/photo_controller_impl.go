@@ -14,13 +14,13 @@ type PhotoControllerImpl struct {
 	PhotoService services.PhotoService
 }
 
-func NewPhotoController(photoService services.PhotoService) PhotoController {
+func NewPhotoController(service services.PhotoService) PhotoController {
 	return &PhotoControllerImpl{
-		PhotoService: photoService,
+		PhotoService: service,
 	}
 }
 
-func (photoController *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
+func (controller *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 	request := params.CreateUpdatePhoto{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -30,7 +30,7 @@ func (photoController *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 	userId := ctx.MustGet("id").(float64)
 	request.UserID = uint(userId)
 
-	photo, err := photoController.PhotoService.CreatePhoto(request)
+	photo, err := controller.PhotoService.CreatePhoto(request)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -39,8 +39,8 @@ func (photoController *PhotoControllerImpl) CreatePhoto(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, photo)
 }
 
-func (photoController *PhotoControllerImpl) GetPhotos(ctx *gin.Context) {
-	photos, err := photoController.PhotoService.GetPhotos()
+func (controller *PhotoControllerImpl) GetPhotos(ctx *gin.Context) {
+	photos, err := controller.PhotoService.GetPhotos()
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 	}
@@ -48,7 +48,7 @@ func (photoController *PhotoControllerImpl) GetPhotos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, photos)
 }
 
-func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
+func (controller *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 	request := params.CreateUpdatePhoto{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -61,7 +61,7 @@ func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 		return
 	}
 
-	photo, err := photoController.PhotoService.UpdatePhoto(request, photoId)
+	photo, err := controller.PhotoService.UpdatePhoto(request, photoId)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -70,14 +70,14 @@ func (photoController *PhotoControllerImpl) UpdatePhoto(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, photo)
 }
 
-func (photoController *PhotoControllerImpl) DeletePhoto(ctx *gin.Context) {
+func (controller *PhotoControllerImpl) DeletePhoto(ctx *gin.Context) {
 	photoId, err := strconv.Atoi(ctx.Param("photoId"))
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, "invalid parameter photo id")
 		return
 	}
 
-	err = photoController.PhotoService.DeletePhotoByID(photoId)
+	err = controller.PhotoService.DeletePhotoByID(photoId)
 
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())

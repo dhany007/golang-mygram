@@ -14,7 +14,7 @@ func NewPhotoRepository() PhotoRepository {
 	return &PhotoRepositoryImpl{}
 }
 
-func (photoRepsitory *PhotoRepositoryImpl) CreatePhoto(db *gorm.DB, photo models.Photo) (models.Photo, error) {
+func (repository *PhotoRepositoryImpl) CreatePhoto(db *gorm.DB, photo models.Photo) (models.Photo, error) {
 	err := db.Create(&photo).Error
 	if err != nil {
 		return photo, errors.New(err.Error())
@@ -32,7 +32,7 @@ func (photoRepsitory *PhotoRepositoryImpl) CreatePhoto(db *gorm.DB, photo models
 	return photoCreated, nil
 }
 
-func (photoRepsitory *PhotoRepositoryImpl) GetPhotos(db *gorm.DB) ([]models.Photo, error) {
+func (repository *PhotoRepositoryImpl) GetPhotos(db *gorm.DB) ([]models.Photo, error) {
 	photos := []models.Photo{}
 
 	result := db.Table("photos").Scan(&photos)
@@ -52,7 +52,7 @@ func (photoRepsitory *PhotoRepositoryImpl) GetPhotos(db *gorm.DB) ([]models.Phot
 	return photos, nil
 }
 
-func (photoRepsitory *PhotoRepositoryImpl) UpdatePhoto(db *gorm.DB, photo models.Photo, photoId int) (models.Photo, error) {
+func (repository *PhotoRepositoryImpl) UpdatePhoto(db *gorm.DB, photo models.Photo, photoId int) (models.Photo, error) {
 	requestPhoto := photo
 	result := db.Where("id = ?", photoId).First(&photo)
 
@@ -82,7 +82,7 @@ func (photoRepsitory *PhotoRepositoryImpl) UpdatePhoto(db *gorm.DB, photo models
 	return photoUpdated, nil
 }
 
-func (photoRepsitory *PhotoRepositoryImpl) DeletePhoto(db *gorm.DB, photo models.Photo) error {
+func (repository *PhotoRepositoryImpl) DeletePhoto(db *gorm.DB, photo models.Photo) error {
 	err := db.Delete(&photo).Error
 	if err != nil {
 		return err
@@ -91,7 +91,7 @@ func (photoRepsitory *PhotoRepositoryImpl) DeletePhoto(db *gorm.DB, photo models
 	return nil
 }
 
-func (photoRepsitory *PhotoRepositoryImpl) GetPhotoById(db *gorm.DB, photoId int) (models.Photo, error) {
+func (repository *PhotoRepositoryImpl) GetPhotoById(db *gorm.DB, photoId int) (models.Photo, error) {
 	photo := models.Photo{}
 
 	result := db.Table("photos").Select([]string{"id", "user_id"}).Where("id = ?", photoId).Scan(&photo)

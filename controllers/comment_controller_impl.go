@@ -14,13 +14,13 @@ type CommentControllerImpl struct {
 	CommentService services.CommentService
 }
 
-func NewCommentController(commentService services.CommentService) CommentController {
+func NewCommentController(service services.CommentService) CommentController {
 	return &CommentControllerImpl{
-		CommentService: commentService,
+		CommentService: service,
 	}
 }
 
-func (commentController *CommentControllerImpl) CreateComment(ctx *gin.Context) {
+func (controller *CommentControllerImpl) CreateComment(ctx *gin.Context) {
 	request := params.CreateComment{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -30,7 +30,7 @@ func (commentController *CommentControllerImpl) CreateComment(ctx *gin.Context) 
 	userId := ctx.MustGet("id").(float64)
 	request.UserID = uint(userId)
 
-	comment, err := commentController.CommentService.CreateComment(request)
+	comment, err := controller.CommentService.CreateComment(request)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -39,8 +39,8 @@ func (commentController *CommentControllerImpl) CreateComment(ctx *gin.Context) 
 	ctx.JSON(http.StatusCreated, comment)
 }
 
-func (commentController *CommentControllerImpl) GetComments(ctx *gin.Context) {
-	comments, err := commentController.CommentService.GetComments()
+func (controller *CommentControllerImpl) GetComments(ctx *gin.Context) {
+	comments, err := controller.CommentService.GetComments()
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 	}
@@ -48,7 +48,7 @@ func (commentController *CommentControllerImpl) GetComments(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, comments)
 }
 
-func (commentController *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
+func (controller *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
 	request := params.UpdateComment{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -61,7 +61,7 @@ func (commentController *CommentControllerImpl) UpdateComment(ctx *gin.Context) 
 		return
 	}
 
-	comment, err := commentController.CommentService.UpdateComment(request, commentId)
+	comment, err := controller.CommentService.UpdateComment(request, commentId)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -70,14 +70,14 @@ func (commentController *CommentControllerImpl) UpdateComment(ctx *gin.Context) 
 	ctx.JSON(http.StatusOK, comment)
 }
 
-func (commentController *CommentControllerImpl) DeleteCommentByID(ctx *gin.Context) {
+func (controller *CommentControllerImpl) DeleteCommentByID(ctx *gin.Context) {
 	commentId, err := strconv.Atoi(ctx.Param("commentId"))
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, "invalid parameter comment id")
 		return
 	}
 
-	err = commentController.CommentService.DeleteCommentByID(commentId)
+	err = controller.CommentService.DeleteCommentByID(commentId)
 
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
