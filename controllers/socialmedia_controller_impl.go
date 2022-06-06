@@ -74,5 +74,18 @@ func (controller *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context)
 }
 
 func (controller *SocialMediaControllerImpl) DeleteSocialMedia(ctx *gin.Context) {
-	panic("implement me")
+	socialMediaId, err := strconv.Atoi(ctx.Param("socialMediaId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter socialmedia id")
+		return
+	}
+
+	err = controller.SocialMediaService.DeleteSocialMediasByID(socialMediaId)
+
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	helpers.SuccessMessageResponse(ctx, "Your socialmedia has been successfully deleted")
 }

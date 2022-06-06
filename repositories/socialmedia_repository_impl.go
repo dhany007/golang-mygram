@@ -80,8 +80,13 @@ func (repository *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB, soci
 	return socialMediaUpdate, nil
 }
 
-func (repository *SocialMediaRepositoryImpl) DeleteSocialMedia(db *gorm.DB) error {
-	panic("implement me")
+func (repository *SocialMediaRepositoryImpl) DeleteSocialMedia(db *gorm.DB, socialMedia models.SocialMedia) error {
+	err := db.Delete(&socialMedia).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (repository *SocialMediaRepositoryImpl) GetSocialMediaById(db *gorm.DB, socialMediaId int) (models.SocialMedia, error) {

@@ -79,5 +79,14 @@ func (service *SocialMediaServiceImpl) UpdateSocialMedias(socialMediaParam param
 }
 
 func (service *SocialMediaServiceImpl) DeleteSocialMediasByID(socialMediaId int) error {
-	panic("implement me")
+	socialMedia := models.SocialMedia{
+		ID: uint(socialMediaId),
+	}
+
+	err := service.SocialMediaRepository.DeleteSocialMedia(service.DB, socialMedia)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

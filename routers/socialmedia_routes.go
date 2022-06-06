@@ -24,6 +24,6 @@ func SocialMediaRoutes(db *gorm.DB, router *gin.Engine) {
 		socialMediaRoutes.POST("/", socialMediaController.CreateSocialMedia)
 		socialMediaRoutes.GET("/", socialMediaController.GetSocialMedias)
 		socialMediaRoutes.PUT("/:socialMediaId", middlewares.SocialMediaAuthorization(db), socialMediaController.UpdateSocialMedia)
-		socialMediaRoutes.DELETE("/:socialMediaId", socialMediaController.DeleteSocialMedia)
+		socialMediaRoutes.DELETE("/:socialMediaId", middlewares.SocialMediaAuthorization(db), socialMediaController.DeleteSocialMedia)
 	}
 }
