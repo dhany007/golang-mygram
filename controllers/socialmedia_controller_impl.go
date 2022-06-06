@@ -5,6 +5,7 @@ import (
 	"final/params"
 	"final/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -51,7 +52,25 @@ func (controller *SocialMediaControllerImpl) GetSocialMedias(ctx *gin.Context) {
 }
 
 func (controller *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context) {
-	panic("implement me")
+	request := params.CreateUpdateSocialMedia{}
+	requestValid := helpers.ReadFromRequestBody(ctx, &request)
+	if !requestValid {
+		return
+	}
+
+	socialMediaId, err := strconv.Atoi(ctx.Param("socialMediaId"))
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, "invalid parameter socialmedia id")
+		return
+	}
+
+	socialMedia, err := controller.SocialMediaService.UpdateSocialMedias(request, socialMediaId)
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, socialMedia)
 }
 
 func (controller *SocialMediaControllerImpl) DeleteSocialMedia(ctx *gin.Context) {

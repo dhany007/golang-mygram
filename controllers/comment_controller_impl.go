@@ -57,7 +57,7 @@ func (controller *CommentControllerImpl) UpdateComment(ctx *gin.Context) {
 
 	commentId, err := strconv.Atoi(ctx.Param("commentId"))
 	if err != nil {
-		helpers.FailedMessageResponse(ctx, "invalid parameter photo id")
+		helpers.FailedMessageResponse(ctx, "invalid parameter comment id")
 		return
 	}
 

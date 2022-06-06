@@ -51,14 +51,47 @@ func (repository *SocialMediaRepositoryImpl) GetSocialMedias(db *gorm.DB) ([]mod
 	return socialMedias, nil
 }
 
-func (repository *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB) (models.SocialMedia, error) {
-	panic("implement me")
+func (repository *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB, socialMedia models.SocialMedia, socialMediaId int) (models.SocialMedia, error) {
+	requestSocialMedia := socialMedia
+
+	result := db.Where("id = ?", socialMediaId).First(&socialMedia)
+
+	if result.RowsAffected == 0 {
+		return socialMedia, errors.New("socialMedia not found")
+	}
+
+	err := db.Model(&socialMedia).Where("id = ?", socialMediaId).Updates(models.SocialMedia{
+		Name:           requestSocialMedia.Name,
+		SocialMediaUrl: requestSocialMedia.SocialMediaUrl,
+	}).Error
+
+	if err != nil {
+		return socialMedia, errors.New(err.Error())
+	}
+
+	socialMediaUpdate := models.SocialMedia{
+		ID:             socialMedia.ID,
+		Name:           socialMedia.Name,
+		SocialMediaUrl: socialMedia.SocialMediaUrl,
+		UserID:         socialMedia.UserID,
+		UpdatedAt:      socialMedia.UpdatedAt,
+	}
+
+	return socialMediaUpdate, nil
 }
 
 func (repository *SocialMediaRepositoryImpl) DeleteSocialMedia(db *gorm.DB) error {
 	panic("implement me")
 }
 
-func (repository *SocialMediaRepositoryImpl) GetSocialMediaById(db *gorm.DB) (models.SocialMedia, error) {
-	panic("implement me")
+func (repository *SocialMediaRepositoryImpl) GetSocialMediaById(db *gorm.DB, socialMediaId int) (models.SocialMedia, error) {
+	socialMedia := models.SocialMedia{}
+
+	result := db.Table("social_media").Select([]string{"id", "user_id"}).Where("id = ?", socialMediaId).Scan(&socialMedia)
+
+	if result.RowsAffected == 0 {
+		return socialMedia, errors.New("socialmedia not found")
+	}
+
+	return socialMedia, nil
 }
