@@ -26,5 +26,4 @@ func UserRoutes(db *gorm.DB, router *gin.Engine) {
 		userRouter.PUT("/:userId", middlewares.UserAuthorization(), userController.UpdateUser)
 		userRouter.DELETE("/:userId", middlewares.UserAuthorization(), userController.DeleteUser)
 	}
-
 }

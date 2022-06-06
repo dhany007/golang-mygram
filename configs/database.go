@@ -22,11 +22,12 @@ const (
 
 func StartDB() *gorm.DB {
 	dataSourceName := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME,
+		"host=%s user=%s password=%s dbname=%s port=%s  sslmode=disable",
+		DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT,
 	)
 
 	db, err := gorm.Open(postgres.Open(dataSourceName), &gorm.Config{})
+
 	helpers.PanicIfError(err)
 
 	err = autoMigrate(db)
