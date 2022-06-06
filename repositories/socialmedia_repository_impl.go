@@ -32,7 +32,23 @@ func (repository *SocialMediaRepositoryImpl) CreateSocialMedia(db *gorm.DB, soci
 }
 
 func (repository *SocialMediaRepositoryImpl) GetSocialMedias(db *gorm.DB) ([]models.SocialMedia, error) {
-	panic("implement me")
+	socialMedias := []models.SocialMedia{}
+
+	result := db.Table("social_media").Scan(&socialMedias)
+	if result.RowsAffected == 0 {
+		return socialMedias, errors.New("socialmedias not found")
+	}
+
+	for i, p := range socialMedias {
+		user := models.User{}
+		err := db.Table("users").Select([]string{"id", "email", "username"}).Where("id = ?", p.UserID).Scan(&user).Error
+		if err != nil {
+			continue
+		}
+		socialMedias[i].User = &user
+	}
+
+	return socialMedias, nil
 }
 
 func (repository *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB) (models.SocialMedia, error) {

@@ -46,7 +46,15 @@ func (service *SocialMediaServiceImpl) CreateSocialMedia(socialMediaParams param
 }
 
 func (service *SocialMediaServiceImpl) GetSocialMedias() ([]models.SocialMedia, error) {
-	panic("implement me")
+	socialMedias := []models.SocialMedia{}
+
+	response, err := service.SocialMediaRepository.GetSocialMedias(service.DB)
+
+	if err != nil {
+		return socialMedias, errors.New(err.Error())
+	}
+
+	return response, nil
 }
 
 func (service *SocialMediaServiceImpl) UpdateSocialMedias(socialMediaParam params.CreateUpdateSocialMedia, socialMediaId int) (models.SocialMedia, error) {

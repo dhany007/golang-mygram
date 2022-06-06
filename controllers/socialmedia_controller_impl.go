@@ -40,7 +40,14 @@ func (controller *SocialMediaControllerImpl) CreateSocialMedia(ctx *gin.Context)
 }
 
 func (controller *SocialMediaControllerImpl) GetSocialMedias(ctx *gin.Context) {
-	panic("implement me")
+	socialMedias, err := controller.SocialMediaService.GetSocialMedias()
+	if err != nil {
+		helpers.FailedMessageResponse(ctx, err.Error())
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"social_medias": socialMedias,
+	})
 }
 
 func (controller *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context) {
