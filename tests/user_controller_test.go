@@ -1,4 +1,4 @@
-package tests
+package testsapi
 
 import (
 	"encoding/json"
@@ -10,7 +10,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
@@ -19,17 +18,9 @@ func truncateTable(db *gorm.DB) {
 	db.Exec("DELETE FROM users")
 }
 
-func setupRouter(db *gorm.DB) *gin.Engine {
-	router := gin.Default()
-
-	routers.UserRoutes(db, router)
-
-	return router
-}
-
 func TestRegisterUserSuccess(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	requestBody := strings.NewReader(`{
@@ -57,7 +48,7 @@ func TestRegisterUserSuccess(t *testing.T) {
 
 func TestRegisterUserFailed(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	testCases := []struct {
@@ -130,7 +121,7 @@ func TestRegisterUserFailed(t *testing.T) {
 
 func TestLoginUserSuccess(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	requestBodyRegister := strings.NewReader(`{
@@ -165,7 +156,7 @@ func TestLoginUserSuccess(t *testing.T) {
 
 func TestLoginUserFailed(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	requestBodyRegister := strings.NewReader(`{
@@ -223,43 +214,9 @@ func TestLoginUserFailed(t *testing.T) {
 	}
 }
 
-func RegisterUser(request string, router *gin.Engine) (userId int) {
-	requestBodyRegister := strings.NewReader(request)
-
-	requestRegister := httptest.NewRequest(http.MethodPost, "http://localhost:3000/users/register", requestBodyRegister)
-	recorderRegister := httptest.NewRecorder()
-	router.ServeHTTP(recorderRegister, requestRegister)
-
-	responseRegister := recorderRegister.Result()
-
-	body, _ := io.ReadAll(responseRegister.Body)
-	response := map[string]interface{}{}
-	json.Unmarshal(body, &response)
-
-	userId = int(response["id"].(float64))
-	return
-}
-
-func LoginUser(request string, router *gin.Engine) (tokenUser string) {
-	requestBodyLogin := strings.NewReader(request)
-
-	requestLogin := httptest.NewRequest(http.MethodPost, "http://localhost:3000/users/login", requestBodyLogin)
-	recorderLogin := httptest.NewRecorder()
-
-	router.ServeHTTP(recorderLogin, requestLogin)
-	responseLogin := recorderLogin.Result()
-
-	body, _ := io.ReadAll(responseLogin.Body)
-	responseBodyLogin := map[string]interface{}{}
-	json.Unmarshal(body, &responseBodyLogin)
-
-	tokenUser = responseBodyLogin["token"].(string)
-	return
-}
-
 func TestUpdateUserSuccess(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	registerUser1 := `{
@@ -268,14 +225,14 @@ func TestUpdateUserSuccess(t *testing.T) {
     "password": "dhany2",
     "username": "dhany2"
 	}`
-	userId := RegisterUser(registerUser1, router)
+	userId := RegisterUserTest(registerUser1, router)
 
 	loginUser1 := `{
     "email": "dhany2@gmail.com",
     "password": "dhany2"
 	}`
 
-	tokenUser1 := LoginUser(loginUser1, router)
+	tokenUser1 := LoginUserTest(loginUser1, router)
 
 	requestBodyUpdate := strings.NewReader(`{
     "email": "dhanyupdate@gmail.com",
@@ -303,7 +260,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 
 func TestUpdateUserFailed(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	registerUser1 := `{
@@ -312,13 +269,13 @@ func TestUpdateUserFailed(t *testing.T) {
     "password": "dhany2",
     "username": "dhany2"
 	}`
-	userId1 := RegisterUser(registerUser1, router)
+	userId1 := RegisterUserTest(registerUser1, router)
 
 	loginUser1 := `{
     "email": "dhany2@gmail.com",
     "password": "dhany2"
 	}`
-	tokenUser1 := LoginUser(loginUser1, router)
+	tokenUser1 := LoginUserTest(loginUser1, router)
 
 	registerUser2 := `{
     "age": 8,
@@ -326,13 +283,13 @@ func TestUpdateUserFailed(t *testing.T) {
     "password": "dhany1",
     "username": "dhany1"
 	}`
-	userId2 := RegisterUser(registerUser2, router)
+	userId2 := RegisterUserTest(registerUser2, router)
 
 	loginUser2 := `{
     "email": "dhany1@gmail.com",
     "password": "dhany1"
 	}`
-	tokenUser2 := LoginUser(loginUser2, router)
+	tokenUser2 := LoginUserTest(loginUser2, router)
 
 	requestBodyUpdate := strings.NewReader(`{
     "email": "dhanyupdate@gmail.com",
@@ -390,7 +347,7 @@ func TestUpdateUserFailed(t *testing.T) {
 
 func TestDeleteUserSuccess(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	registerUser1 := `{
@@ -399,14 +356,14 @@ func TestDeleteUserSuccess(t *testing.T) {
     "password": "dhany2",
     "username": "dhany2"
 	}`
-	userId := RegisterUser(registerUser1, router)
+	userId := RegisterUserTest(registerUser1, router)
 
 	loginUser1 := `{
     "email": "dhany2@gmail.com",
     "password": "dhany2"
 	}`
 
-	tokenUser1 := LoginUser(loginUser1, router)
+	tokenUser1 := LoginUserTest(loginUser1, router)
 
 	url := fmt.Sprintf("http://localhost:3000/users/%d", userId)
 	token := fmt.Sprintf("Bearer %s", tokenUser1)
@@ -429,7 +386,7 @@ func TestDeleteUserSuccess(t *testing.T) {
 
 func TestDeleteUserFailed(t *testing.T) {
 	dbTest := StartDBTest()
-	router := setupRouter(dbTest)
+	router := routers.StartServer(dbTest)
 	truncateTable(dbTest)
 
 	registerUser1 := `{
@@ -438,13 +395,13 @@ func TestDeleteUserFailed(t *testing.T) {
     "password": "dhany2",
     "username": "dhany2"
 	}`
-	userId1 := RegisterUser(registerUser1, router)
+	userId1 := RegisterUserTest(registerUser1, router)
 
 	loginUser1 := `{
     "email": "dhany2@gmail.com",
     "password": "dhany2"
 	}`
-	tokenUser1 := LoginUser(loginUser1, router)
+	tokenUser1 := LoginUserTest(loginUser1, router)
 
 	registerUser2 := `{
     "age": 8,
@@ -452,13 +409,13 @@ func TestDeleteUserFailed(t *testing.T) {
     "password": "dhany1",
     "username": "dhany1"
 	}`
-	userId2 := RegisterUser(registerUser2, router)
+	userId2 := RegisterUserTest(registerUser2, router)
 
 	loginUser2 := `{
     "email": "dhany1@gmail.com",
     "password": "dhany1"
 	}`
-	tokenUser2 := LoginUser(loginUser2, router)
+	tokenUser2 := LoginUserTest(loginUser2, router)
 
 	testCases := []struct {
 		desc     string
