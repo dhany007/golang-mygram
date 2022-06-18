@@ -24,10 +24,10 @@ func NewCommentService(db *gorm.DB, repository repositories.CommentRepository, v
 	}
 }
 
-func (service *CommentServiceImpl) CreateComment(commentParam params.CreateComment) (models.Comment, error) {
+func (s *CommentServiceImpl) CreateComment(commentParam params.CreateComment) (models.Comment, error) {
 	comment := models.Comment{}
 
-	errValidate := service.Validate.Struct(commentParam)
+	errValidate := s.Validate.Struct(commentParam)
 	if errValidate != nil {
 		return comment, errors.New(errValidate.Error())
 	}
@@ -36,7 +36,7 @@ func (service *CommentServiceImpl) CreateComment(commentParam params.CreateComme
 	comment.UserID = commentParam.UserID
 	comment.PhotoID = commentParam.PhotoID
 
-	response, err := service.CommentRepository.CreateComment(service.DB, comment)
+	response, err := s.CommentRepository.CreateComment(s.DB, comment)
 	if err != nil {
 		return comment, errors.New(err.Error())
 	}
@@ -44,10 +44,10 @@ func (service *CommentServiceImpl) CreateComment(commentParam params.CreateComme
 	return response, nil
 }
 
-func (service *CommentServiceImpl) GetComments() ([]models.Comment, error) {
+func (s *CommentServiceImpl) GetComments() ([]models.Comment, error) {
 	comments := []models.Comment{}
 
-	response, err := service.CommentRepository.GetComments(service.DB)
+	response, err := s.CommentRepository.GetComments(s.DB)
 
 	if err != nil {
 		return comments, errors.New(err.Error())
@@ -56,17 +56,17 @@ func (service *CommentServiceImpl) GetComments() ([]models.Comment, error) {
 	return response, nil
 }
 
-func (service *CommentServiceImpl) UpdateComment(commentParam params.UpdateComment, commentId int) (models.Comment, error) {
+func (s *CommentServiceImpl) UpdateComment(commentParam params.UpdateComment, commentId int) (models.Comment, error) {
 	comment := models.Comment{}
 
-	errRequest := service.Validate.Struct(commentParam)
+	errRequest := s.Validate.Struct(commentParam)
 	if errRequest != nil {
 		return comment, errors.New(errRequest.Error())
 	}
 
 	comment.Message = commentParam.Message
 
-	response, err := service.CommentRepository.UpdateComment(service.DB, comment, commentId)
+	response, err := s.CommentRepository.UpdateComment(s.DB, comment, commentId)
 
 	if err != nil {
 		return comment, errors.New(err.Error())
@@ -75,12 +75,12 @@ func (service *CommentServiceImpl) UpdateComment(commentParam params.UpdateComme
 	return response, nil
 }
 
-func (service *CommentServiceImpl) DeleteCommentByID(commentId int) error {
+func (s *CommentServiceImpl) DeleteCommentByID(commentId int) error {
 	comment := models.Comment{
 		ID: uint(commentId),
 	}
 
-	err := service.CommentRepository.DeleteComment(service.DB, comment)
+	err := s.CommentRepository.DeleteComment(s.DB, comment)
 	if err != nil {
 		return err
 	}

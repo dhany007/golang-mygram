@@ -14,7 +14,7 @@ func NewSocialMediaRepository() SocialMediaRepository {
 	return &SocialMediaRepositoryImpl{}
 }
 
-func (repository *SocialMediaRepositoryImpl) CreateSocialMedia(db *gorm.DB, socialMedia models.SocialMedia) (models.SocialMedia, error) {
+func (r *SocialMediaRepositoryImpl) CreateSocialMedia(db *gorm.DB, socialMedia models.SocialMedia) (models.SocialMedia, error) {
 	err := db.Create(&socialMedia).Error
 	if err != nil {
 		return socialMedia, errors.New(err.Error())
@@ -31,7 +31,7 @@ func (repository *SocialMediaRepositoryImpl) CreateSocialMedia(db *gorm.DB, soci
 	return socialMediaCreated, nil
 }
 
-func (repository *SocialMediaRepositoryImpl) GetSocialMedias(db *gorm.DB) ([]models.SocialMedia, error) {
+func (r *SocialMediaRepositoryImpl) GetSocialMedias(db *gorm.DB) ([]models.SocialMedia, error) {
 	socialMedias := []models.SocialMedia{}
 
 	result := db.Table("social_media").Scan(&socialMedias)
@@ -51,7 +51,7 @@ func (repository *SocialMediaRepositoryImpl) GetSocialMedias(db *gorm.DB) ([]mod
 	return socialMedias, nil
 }
 
-func (repository *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB, socialMedia models.SocialMedia, socialMediaId int) (models.SocialMedia, error) {
+func (r *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB, socialMedia models.SocialMedia, socialMediaId int) (models.SocialMedia, error) {
 	requestSocialMedia := socialMedia
 
 	result := db.Where("id = ?", socialMediaId).First(&socialMedia)
@@ -80,7 +80,7 @@ func (repository *SocialMediaRepositoryImpl) UpdateSocialMedia(db *gorm.DB, soci
 	return socialMediaUpdate, nil
 }
 
-func (repository *SocialMediaRepositoryImpl) DeleteSocialMedia(db *gorm.DB, socialMedia models.SocialMedia) error {
+func (r *SocialMediaRepositoryImpl) DeleteSocialMedia(db *gorm.DB, socialMedia models.SocialMedia) error {
 	err := db.Delete(&socialMedia).Error
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func (repository *SocialMediaRepositoryImpl) DeleteSocialMedia(db *gorm.DB, soci
 	return nil
 }
 
-func (repository *SocialMediaRepositoryImpl) GetSocialMediaById(db *gorm.DB, socialMediaId int) (models.SocialMedia, error) {
+func (r *SocialMediaRepositoryImpl) GetSocialMediaById(db *gorm.DB, socialMediaId int) (models.SocialMedia, error) {
 	socialMedia := models.SocialMedia{}
 
 	result := db.Table("social_media").Select([]string{"id", "user_id"}).Where("id = ?", socialMediaId).Scan(&socialMedia)

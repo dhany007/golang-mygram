@@ -25,10 +25,10 @@ func NewUserService(repository repositories.UserRepository, db *gorm.DB, validat
 	}
 }
 
-func (service *UserServiceImpl) CreateUser(userParams params.CreateUser) (models.User, error) {
+func (s *UserServiceImpl) CreateUser(userParams params.CreateUser) (models.User, error) {
 	user := models.User{}
 
-	err := service.Validate.Struct(userParams)
+	err := s.Validate.Struct(userParams)
 	if err != nil {
 		return user, errors.New(err.Error())
 	}
@@ -38,7 +38,7 @@ func (service *UserServiceImpl) CreateUser(userParams params.CreateUser) (models
 	user.Password = userParams.Password
 	user.Username = userParams.Username
 
-	response, err := service.UserRepository.CreateUser(service.DB, user)
+	response, err := s.UserRepository.CreateUser(s.DB, user)
 	if err != nil {
 		return user, errors.New(err.Error())
 	}
@@ -46,8 +46,8 @@ func (service *UserServiceImpl) CreateUser(userParams params.CreateUser) (models
 	return response, nil
 }
 
-func (service *UserServiceImpl) LoginUser(userParams params.LoginUser) (string, error) {
-	err := service.Validate.Struct(userParams)
+func (s *UserServiceImpl) LoginUser(userParams params.LoginUser) (string, error) {
+	err := s.Validate.Struct(userParams)
 	if err != nil {
 		return "", errors.New(err.Error())
 	}
@@ -56,7 +56,7 @@ func (service *UserServiceImpl) LoginUser(userParams params.LoginUser) (string, 
 		Email: userParams.Email,
 	}
 
-	response, err := service.UserRepository.LoginUser(service.DB, user)
+	response, err := s.UserRepository.LoginUser(s.DB, user)
 	if err != nil {
 		return "", errors.New(err.Error())
 	}
@@ -73,10 +73,10 @@ func (service *UserServiceImpl) LoginUser(userParams params.LoginUser) (string, 
 	return token, nil
 }
 
-func (service *UserServiceImpl) UpdateUser(userParams params.UpdateUser, userId int) (models.User, error) {
+func (s *UserServiceImpl) UpdateUser(userParams params.UpdateUser, userId int) (models.User, error) {
 	user := models.User{}
 
-	errRequest := service.Validate.Struct(userParams)
+	errRequest := s.Validate.Struct(userParams)
 	if errRequest != nil {
 		return user, errors.New(errRequest.Error())
 	}
@@ -84,7 +84,7 @@ func (service *UserServiceImpl) UpdateUser(userParams params.UpdateUser, userId 
 	user.Email = userParams.Email
 	user.Username = userParams.Username
 
-	response, err := service.UserRepository.UpdateUser(service.DB, user, userId)
+	response, err := s.UserRepository.UpdateUser(s.DB, user, userId)
 
 	if err != nil {
 		return user, errors.New(err.Error())
@@ -93,12 +93,12 @@ func (service *UserServiceImpl) UpdateUser(userParams params.UpdateUser, userId 
 	return response, nil
 }
 
-func (service *UserServiceImpl) DeleteUserByID(userId int) error {
+func (s *UserServiceImpl) DeleteUserByID(userId int) error {
 	user := models.User{
 		ID: uint(userId),
 	}
 
-	err := service.UserRepository.DeleteUserByID(service.DB, user)
+	err := s.UserRepository.DeleteUserByID(s.DB, user)
 	if err != nil {
 		return err
 	}

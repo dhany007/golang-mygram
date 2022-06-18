@@ -24,10 +24,10 @@ func NewSocialMediaService(validate *validator.Validate, repository repositories
 	}
 }
 
-func (service *SocialMediaServiceImpl) CreateSocialMedia(socialMediaParams params.CreateUpdateSocialMedia) (models.SocialMedia, error) {
+func (s *SocialMediaServiceImpl) CreateSocialMedia(socialMediaParams params.CreateUpdateSocialMedia) (models.SocialMedia, error) {
 	socialMedia := models.SocialMedia{}
 
-	errValidate := service.Validate.Struct(socialMediaParams)
+	errValidate := s.Validate.Struct(socialMediaParams)
 	if errValidate != nil {
 		return socialMedia, errors.New(errValidate.Error())
 	}
@@ -36,7 +36,7 @@ func (service *SocialMediaServiceImpl) CreateSocialMedia(socialMediaParams param
 	socialMedia.SocialMediaUrl = socialMediaParams.SocialMediaUrl
 	socialMedia.UserID = socialMediaParams.UserID
 
-	response, err := service.SocialMediaRepository.CreateSocialMedia(service.DB, socialMedia)
+	response, err := s.SocialMediaRepository.CreateSocialMedia(s.DB, socialMedia)
 
 	if err != nil {
 		return socialMedia, errors.New(err.Error())
@@ -45,10 +45,10 @@ func (service *SocialMediaServiceImpl) CreateSocialMedia(socialMediaParams param
 	return response, nil
 }
 
-func (service *SocialMediaServiceImpl) GetSocialMedias() ([]models.SocialMedia, error) {
+func (s *SocialMediaServiceImpl) GetSocialMedias() ([]models.SocialMedia, error) {
 	socialMedias := []models.SocialMedia{}
 
-	response, err := service.SocialMediaRepository.GetSocialMedias(service.DB)
+	response, err := s.SocialMediaRepository.GetSocialMedias(s.DB)
 
 	if err != nil {
 		return socialMedias, errors.New(err.Error())
@@ -57,10 +57,10 @@ func (service *SocialMediaServiceImpl) GetSocialMedias() ([]models.SocialMedia, 
 	return response, nil
 }
 
-func (service *SocialMediaServiceImpl) UpdateSocialMedias(socialMediaParam params.CreateUpdateSocialMedia, socialMediaId int) (models.SocialMedia, error) {
+func (s *SocialMediaServiceImpl) UpdateSocialMedias(socialMediaParam params.CreateUpdateSocialMedia, socialMediaId int) (models.SocialMedia, error) {
 	socialMedia := models.SocialMedia{}
 
-	errRequest := service.Validate.Struct(socialMediaParam)
+	errRequest := s.Validate.Struct(socialMediaParam)
 	if errRequest != nil {
 		return socialMedia, errors.New(errRequest.Error())
 	}
@@ -69,7 +69,7 @@ func (service *SocialMediaServiceImpl) UpdateSocialMedias(socialMediaParam param
 	socialMedia.SocialMediaUrl = socialMediaParam.SocialMediaUrl
 	socialMedia.UserID = socialMediaParam.UserID
 
-	response, err := service.SocialMediaRepository.UpdateSocialMedia(service.DB, socialMedia, socialMediaId)
+	response, err := s.SocialMediaRepository.UpdateSocialMedia(s.DB, socialMedia, socialMediaId)
 
 	if err != nil {
 		return socialMedia, errors.New(err.Error())
@@ -78,12 +78,12 @@ func (service *SocialMediaServiceImpl) UpdateSocialMedias(socialMediaParam param
 	return response, nil
 }
 
-func (service *SocialMediaServiceImpl) DeleteSocialMediasByID(socialMediaId int) error {
+func (s *SocialMediaServiceImpl) DeleteSocialMediasByID(socialMediaId int) error {
 	socialMedia := models.SocialMedia{
 		ID: uint(socialMediaId),
 	}
 
-	err := service.SocialMediaRepository.DeleteSocialMedia(service.DB, socialMedia)
+	err := s.SocialMediaRepository.DeleteSocialMedia(s.DB, socialMedia)
 	if err != nil {
 		return err
 	}

@@ -14,7 +14,7 @@ func NewCommentRepository() CommentRepository {
 	return &CommentRepositoryImpl{}
 }
 
-func (repository *CommentRepositoryImpl) CreateComment(db *gorm.DB, comment models.Comment) (models.Comment, error) {
+func (r *CommentRepositoryImpl) CreateComment(db *gorm.DB, comment models.Comment) (models.Comment, error) {
 	err := db.Create(&comment).Error
 	if err != nil {
 		return comment, errors.New(err.Error())
@@ -30,7 +30,7 @@ func (repository *CommentRepositoryImpl) CreateComment(db *gorm.DB, comment mode
 
 	return commentCreated, nil
 }
-func (repository *CommentRepositoryImpl) GetComments(db *gorm.DB) ([]models.Comment, error) {
+func (r *CommentRepositoryImpl) GetComments(db *gorm.DB) ([]models.Comment, error) {
 	comments := []models.Comment{}
 
 	result := db.Table("comments").Scan(&comments)
@@ -50,7 +50,7 @@ func (repository *CommentRepositoryImpl) GetComments(db *gorm.DB) ([]models.Comm
 
 	return comments, nil
 }
-func (repository *CommentRepositoryImpl) UpdateComment(db *gorm.DB, comment models.Comment, commentId int) (models.Comment, error) {
+func (r *CommentRepositoryImpl) UpdateComment(db *gorm.DB, comment models.Comment, commentId int) (models.Comment, error) {
 	requestComment := comment
 	result := db.Where("id = ?", commentId).First(&comment)
 
@@ -77,7 +77,7 @@ func (repository *CommentRepositoryImpl) UpdateComment(db *gorm.DB, comment mode
 	return commentUpdated, nil
 }
 
-func (repository *CommentRepositoryImpl) DeleteComment(db *gorm.DB, comment models.Comment) error {
+func (r *CommentRepositoryImpl) DeleteComment(db *gorm.DB, comment models.Comment) error {
 	err := db.Delete(&comment).Error
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func (repository *CommentRepositoryImpl) DeleteComment(db *gorm.DB, comment mode
 	return nil
 }
 
-func (repository *CommentRepositoryImpl) GetCommentById(db *gorm.DB, commentId int) (models.Comment, error) {
+func (r *CommentRepositoryImpl) GetCommentById(db *gorm.DB, commentId int) (models.Comment, error) {
 	comment := models.Comment{}
 
 	result := db.Table("comments").Select([]string{"id", "user_id"}).Where("id = ?", commentId).Scan(&comment)

@@ -15,7 +15,7 @@ func NewUserRepository() UserRepository {
 	return &UserRepositoryImpl{}
 }
 
-func (repository *UserRepositoryImpl) CreateUser(db *gorm.DB, user models.User) (models.User, error) {
+func (r *UserRepositoryImpl) CreateUser(db *gorm.DB, user models.User) (models.User, error) {
 	err := db.Create(&user).Error
 	if err != nil {
 		return user, errors.New(err.Error())
@@ -31,7 +31,7 @@ func (repository *UserRepositoryImpl) CreateUser(db *gorm.DB, user models.User) 
 	return userCreated, nil
 }
 
-func (repository *UserRepositoryImpl) LoginUser(db *gorm.DB, user models.User) (models.User, error) {
+func (r *UserRepositoryImpl) LoginUser(db *gorm.DB, user models.User) (models.User, error) {
 	result := db.Where("email = ?", user.Email).First(&user)
 
 	if result.RowsAffected == 0 {
@@ -42,7 +42,7 @@ func (repository *UserRepositoryImpl) LoginUser(db *gorm.DB, user models.User) (
 	return user, nil
 }
 
-func (repository *UserRepositoryImpl) UpdateUser(db *gorm.DB, user models.User, userId int) (models.User, error) {
+func (r *UserRepositoryImpl) UpdateUser(db *gorm.DB, user models.User, userId int) (models.User, error) {
 	tempRequest := user
 	result := db.Where("id = ?", userId).First(&user)
 
@@ -70,7 +70,7 @@ func (repository *UserRepositoryImpl) UpdateUser(db *gorm.DB, user models.User, 
 	return userUpdated, nil
 }
 
-func (repository *UserRepositoryImpl) DeleteUserByID(db *gorm.DB, user models.User) error {
+func (r *UserRepositoryImpl) DeleteUserByID(db *gorm.DB, user models.User) error {
 	err := db.Delete(&user).Error
 	if err != nil {
 		return err

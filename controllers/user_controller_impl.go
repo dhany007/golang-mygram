@@ -20,14 +20,14 @@ func NewUserController(service services.UserService) UserController {
 	}
 }
 
-func (controller *UserControllerImpl) CreateUser(ctx *gin.Context) {
+func (c *UserControllerImpl) CreateUser(ctx *gin.Context) {
 	request := params.CreateUser{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
 		return
 	}
 
-	user, err := controller.UserService.CreateUser(request)
+	user, err := c.UserService.CreateUser(request)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -36,14 +36,14 @@ func (controller *UserControllerImpl) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, user)
 }
 
-func (controller *UserControllerImpl) LoginUser(ctx *gin.Context) {
+func (c *UserControllerImpl) LoginUser(ctx *gin.Context) {
 	request := params.LoginUser{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
 		return
 	}
 
-	token, err := controller.UserService.LoginUser(request)
+	token, err := c.UserService.LoginUser(request)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -54,7 +54,7 @@ func (controller *UserControllerImpl) LoginUser(ctx *gin.Context) {
 	})
 }
 
-func (controller *UserControllerImpl) UpdateUser(ctx *gin.Context) {
+func (c *UserControllerImpl) UpdateUser(ctx *gin.Context) {
 	request := params.UpdateUser{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -67,7 +67,7 @@ func (controller *UserControllerImpl) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	response, err := controller.UserService.UpdateUser(request, userId)
+	response, err := c.UserService.UpdateUser(request, userId)
 
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
@@ -77,14 +77,14 @@ func (controller *UserControllerImpl) UpdateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-func (controller *UserControllerImpl) DeleteUser(ctx *gin.Context) {
+func (c *UserControllerImpl) DeleteUser(ctx *gin.Context) {
 	userId, err := strconv.Atoi(ctx.Param("userId"))
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, "invalid parameter user id")
 		return
 	}
 
-	err = controller.UserService.DeleteUserByID(userId)
+	err = c.UserService.DeleteUserByID(userId)
 
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())

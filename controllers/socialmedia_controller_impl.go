@@ -20,7 +20,7 @@ func NewSocialMediaController(service services.SocialMediaService) SocialMediaCo
 	}
 }
 
-func (controller *SocialMediaControllerImpl) CreateSocialMedia(ctx *gin.Context) {
+func (c *SocialMediaControllerImpl) CreateSocialMedia(ctx *gin.Context) {
 	request := params.CreateUpdateSocialMedia{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -30,7 +30,7 @@ func (controller *SocialMediaControllerImpl) CreateSocialMedia(ctx *gin.Context)
 	userId := ctx.MustGet("id").(float64)
 	request.UserID = uint(userId)
 
-	socialMedia, err := controller.SocialMediaService.CreateSocialMedia(request)
+	socialMedia, err := c.SocialMediaService.CreateSocialMedia(request)
 
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
@@ -40,8 +40,8 @@ func (controller *SocialMediaControllerImpl) CreateSocialMedia(ctx *gin.Context)
 	ctx.JSON(http.StatusCreated, socialMedia)
 }
 
-func (controller *SocialMediaControllerImpl) GetSocialMedias(ctx *gin.Context) {
-	socialMedias, err := controller.SocialMediaService.GetSocialMedias()
+func (c *SocialMediaControllerImpl) GetSocialMedias(ctx *gin.Context) {
+	socialMedias, err := c.SocialMediaService.GetSocialMedias()
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 	}
@@ -51,7 +51,7 @@ func (controller *SocialMediaControllerImpl) GetSocialMedias(ctx *gin.Context) {
 	})
 }
 
-func (controller *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context) {
+func (c *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context) {
 	request := params.CreateUpdateSocialMedia{}
 	requestValid := helpers.ReadFromRequestBody(ctx, &request)
 	if !requestValid {
@@ -64,7 +64,7 @@ func (controller *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context)
 		return
 	}
 
-	socialMedia, err := controller.SocialMediaService.UpdateSocialMedias(request, socialMediaId)
+	socialMedia, err := c.SocialMediaService.UpdateSocialMedias(request, socialMediaId)
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
 		return
@@ -73,14 +73,14 @@ func (controller *SocialMediaControllerImpl) UpdateSocialMedia(ctx *gin.Context)
 	ctx.JSON(http.StatusOK, socialMedia)
 }
 
-func (controller *SocialMediaControllerImpl) DeleteSocialMedia(ctx *gin.Context) {
+func (c *SocialMediaControllerImpl) DeleteSocialMedia(ctx *gin.Context) {
 	socialMediaId, err := strconv.Atoi(ctx.Param("socialMediaId"))
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, "invalid parameter socialmedia id")
 		return
 	}
 
-	err = controller.SocialMediaService.DeleteSocialMediasByID(socialMediaId)
+	err = c.SocialMediaService.DeleteSocialMediasByID(socialMediaId)
 
 	if err != nil {
 		helpers.FailedMessageResponse(ctx, err.Error())
